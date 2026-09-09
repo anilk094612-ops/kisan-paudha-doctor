@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import com.example.ui.components.AdMobBannerView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -133,43 +134,52 @@ fun HomeScreen(
       }
     },
     bottomBar = {
-      // Geometric Balance Bottom Navigation Bar
-      Surface(
-        color = GeometricSurface,
-        modifier = Modifier.fillMaxWidth(),
-        border = BorderStroke(1.dp, GeometricBorder)
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .background(GeometricSurface)
       ) {
-        Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 12.dp),
-          horizontalArrangement = Arrangement.SpaceAround,
-          verticalAlignment = Alignment.CenterVertically
+        // Google AdMob Banner Ad (Cleanly demarcated, non-intrusive)
+        AdMobBannerView()
+
+        // Geometric Balance Bottom Navigation Bar
+        Surface(
+          color = GeometricSurface,
+          modifier = Modifier.fillMaxWidth(),
+          border = BorderStroke(1.dp, GeometricBorder)
         ) {
-          NavTabItem(
-            icon = "🏠",
-            label = "होम",
-            isActive = true,
-            onClick = { /* Already on Home */ }
-          )
-          NavTabItem(
-            icon = "🚜",
-            label = "मेरी फसल",
-            isActive = false,
-            onClick = { viewModel.navigateTo(Screen.MyCropScreen) }
-          )
-          NavTabItem(
-            icon = "🌦️",
-            label = "मौसम",
-            isActive = false,
-            onClick = { viewModel.navigateTo(Screen.WeatherScreen) }
-          )
-          NavTabItem(
-            icon = "👨🌾",
-            label = "विशेषज्ञ",
-            isActive = false,
-            onClick = { viewModel.navigateTo(Screen.ExpertHelp) }
-          )
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(vertical = 8.dp, horizontal = 12.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            NavTabItem(
+              icon = "🏠",
+              label = "होम",
+              isActive = true,
+              onClick = { /* Already on Home */ }
+            )
+            NavTabItem(
+              icon = "🚜",
+              label = "मेरी फसल",
+              isActive = false,
+              onClick = { viewModel.navigateTo(Screen.MyCropScreen) }
+            )
+            NavTabItem(
+              icon = "🌦️",
+              label = "मौसम",
+              isActive = false,
+              onClick = { viewModel.navigateTo(Screen.WeatherScreen) }
+            )
+            NavTabItem(
+              icon = "👨🌾",
+              label = "विशेषज्ञ",
+              isActive = false,
+              onClick = { viewModel.navigateTo(Screen.ExpertHelp) }
+            )
+          }
         }
       }
     },

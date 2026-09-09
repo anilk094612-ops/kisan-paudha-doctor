@@ -36,11 +36,22 @@ import com.example.ui.screens.WeatherScreen
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.PlantDoctorViewModel
 import com.example.ui.viewmodel.Screen
+import com.google.android.gms.ads.MobileAds
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
+
+    // Initialize Google Mobile Ads SDK safely in background
+    try {
+      MobileAds.initialize(this) { status ->
+        android.util.Log.d("MainActivity", "AdMob initialized: $status")
+      }
+    } catch (e: Exception) {
+      android.util.Log.e("MainActivity", "Error initializing MobileAds", e)
+    }
+
     setContent {
       MyApplicationTheme {
         PlantDoctorApp()

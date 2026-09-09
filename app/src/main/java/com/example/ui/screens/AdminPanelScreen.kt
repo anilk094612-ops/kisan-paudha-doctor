@@ -305,6 +305,51 @@ fun AdminPanelScreen(viewModel: PlantDoctorViewModel) {
           }
         }
       }
+
+      // Google AdMob Configuration Status
+      item {
+        Card(
+          shape = RoundedCornerShape(16.dp),
+          colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+          border = BorderStroke(1.5.dp, Color(0xFFBCC6B8)),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Column(modifier = Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Text(text = "📢", fontSize = 22.sp)
+              Spacer(modifier = Modifier.width(8.dp))
+              Text(
+                text = "Google AdMob विज्ञापन कॉन्फ़िगरेशन",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = ForestGreen
+              )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Surface(
+              shape = RoundedCornerShape(8.dp),
+              color = PaleGreenBg,
+              modifier = Modifier.fillMaxWidth()
+            ) {
+              Column(modifier = Modifier.padding(10.dp)) {
+                Text(
+                  text = "🟢 स्थिति: बैनर विज्ञापन सक्रिय (होम स्क्रीन)",
+                  fontSize = 14.sp,
+                  fontWeight = FontWeight.Bold,
+                  color = ForestGreen
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                  text = "• AdMob App ID: ca-app-pub-3325064097619476~9127316401\n• मोड: गूगल टेस्ट ऐड्स (सुरक्षित परीक्षण)\n• Test Ad Unit ID: ca-app-pub-3940256099942544/6300978111",
+                  fontSize = 13.sp,
+                  fontWeight = FontWeight.Medium,
+                  color = Color(0xFF262F23)
+                )
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
