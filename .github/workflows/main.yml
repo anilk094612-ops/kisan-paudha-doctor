@@ -9,10 +9,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -27,5 +27,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kisan-paudha-doctor-aab
-          path: app
-        /build/outputs/bundle/release/*.aab
+          path: app/build/outputs/bundle/release/*.aab
