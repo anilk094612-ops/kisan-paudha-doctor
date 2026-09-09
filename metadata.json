@@ -1,0 +1,6 @@
+{
+  "name": "किसान पौधा डॉक्टर AI",
+  "description": "ग्रामीण किसानों के लिए फसल रोग, कीट व पोषण निदान AI ऐप",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
