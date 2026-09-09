@@ -27,4 +27,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kisan-paudha-doctor-aab
-          path: app/build/outputs/bundle/release/*.aab
+          path: app
+        /build/outputs/bundle/release/*.aab
