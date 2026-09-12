@@ -20,25 +20,13 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
-
-      - name: Check project files
-        run: |
-          echo "Current folder:"
-          pwd
-          echo "Files:"
-          ls -la
-          echo "All Gradle files:"
-          find . -maxdepth 3 -type f \( -name "settings.gradle*" -o -name "build.gradle*" \)
+          gradle-version: '9.3.1'
 
       - name: Build AAB
-        run: |
-          gradle tasks
-          gradle bundleRelease
+        run: gradle bundleRelease
 
       - name: Find AAB
-        run: |
-          find . -type f -name "*.aab" -print
+        run: find . -type f -name "*.aab" -print
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
