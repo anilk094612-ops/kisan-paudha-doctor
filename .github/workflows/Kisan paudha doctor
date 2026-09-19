@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1001136209506",
+    "project_id": "kishan-paudha-doctor",
+    "storage_bucket": "kishan-paudha-doctor.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001136209506:android:78779a4fcd8dc6a67ddb3b",
+        "android_client_info": {
+          "package_name": "com.example.kisanpaudhadoctor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtC_F-jykosSV1Pah6h0nFffjzIB3K_QE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
