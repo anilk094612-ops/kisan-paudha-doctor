@@ -22,8 +22,11 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Build AAB
-        run: gradle bundleRelease
+        run: ./gradlew bundleRelease
 
       - name: Find AAB
         run: find . -type f -name "*.aab" -print
