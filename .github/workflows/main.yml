@@ -22,7 +22,23 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
+      - name: Create signing keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore my-upload-key.jks \
+            -alias upload \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass "${{ secrets.PASS123 }}" \
+            -keypass "${{ secrets.KEYPASS123 }}" \
+            -dname "CN=Kisan Paudha Doctor, OU=App, O=Kisan Paudha Doctor, L=Basti, ST=Uttar Pradesh, C=IN"
+
       - name: Build AAB
+        env:
+          KEYSTORE_PATH: my-upload-key.jks
+          STORE_PASSWORD: ${{ secrets.PASS123 }}
+          KEY_PASSWORD: ${{ secrets.KEYPASS123 }}
         run: gradle bundleRelease
 
       - name: Find AAB
