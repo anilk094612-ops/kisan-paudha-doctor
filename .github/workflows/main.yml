@@ -34,13 +34,14 @@ jobs:
             -keypass "${{ secrets.KEYPASS123 }}" \
             -dname "CN=Kisan Paudha Doctor, OU=App, O=Kisan Paudha Doctor, L=Basti, ST=Uttar Pradesh, C=IN"
 
-      - name: Build Release AAB
-        env:
-          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
-          STORE_PASSWORD: ${{ secrets.PASS123 }}
-          KEY_PASSWORD: ${{ secrets.KEYPASS123 }}
-        run: |
-          gradle bundleRelease
+      - name: Build Release APK and AAB
+  env:
+    KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
+    STORE_PASSWORD: ${{ secrets.PASS123 }}
+    KEY_PASSWORD: ${{ secrets.KEYPASS123 }}
+  run: |
+    gradle assembleRelease bundleRelease
+          
 
       - name: Find AAB
         run: |
