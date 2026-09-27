@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Set up JDK
+      - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -34,19 +34,21 @@ jobs:
             -keypass "${{ secrets.KEYPASS123 }}" \
             -dname "CN=Kisan Paudha Doctor, OU=App, O=Kisan Paudha Doctor, L=Basti, ST=Uttar Pradesh, C=IN"
 
-      - name: Build AAB
+      - name: Build Release AAB
         env:
-          KEYSTORE_PATH: my-upload-key.jks
+          KEYSTORE_PATH: ${{ github.workspace }}/my-upload-key.jks
           STORE_PASSWORD: ${{ secrets.PASS123 }}
           KEY_PASSWORD: ${{ secrets.KEYPASS123 }}
-        run: gradle bundleRelease
+        run: |
+          gradle bundleRelease
 
       - name: Find AAB
-        run: find . -type f -name "*.aab" -print
+        run: |
+          find . -type f -name "*.aab" -print
 
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: kisan-paudha-doctor-aab
-          path: '**/*.aab'
+          path: '**/build/outputs/bundle/release/*.aab'
           if-no-files-found: error
