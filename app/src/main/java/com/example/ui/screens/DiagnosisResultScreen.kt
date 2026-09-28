@@ -1,6 +1,36 @@
 package com.example.ui.screens
 
-import androidx.compose.foundation.BorderStroke
+ca-app-pub-3325064097619476/7998051657import android.app.Activity
+import android.content.Context
+import androidx.compose.runtime  val context = LocalContext.current
+
+  LaunchedEffect(Unit) {
+    val adRequest = AdRequest.Builder().build()
+
+    InterstitialAd.load(
+      context,
+      "YOUR_INTERSTITIAL_AD_UNIT_ID",
+      adRequest,
+      object : InterstitialAdLoadCallback() {
+
+        override fun onAdLoaded(interstitialAd: InterstitialAd) {
+          (context as? Activity)?.let {
+            interstitialAd.show(it)
+          }
+        }
+
+        override fun onAdFailedToLoad(adError: LoadAdError) {
+          // Ad न आए तो Result सामान्य रूप से दिखाई देगा
+        }
+      }
+    )
+  }.@Composable
+fun DiagnosisResultScreen(viewModel: PlantDoctorViewModel) {LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallbackimport androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
