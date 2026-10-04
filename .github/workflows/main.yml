@@ -50,12 +50,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kisan-paudha-doctor-apk
-          path: '**/build/outputs/apk/release/*.apk'
+          path: "**/build/outputs/apk/release/*.apk"
           if-no-files-found: error
 
       - name: Upload Release AAB
         uses: actions/upload-artifact@v4
         with:
           name: kisan-paudha-doctor-aab
-          path: '**/build/outputs/bundle/release/*.aab'
+          path: "**/build/outputs/bundle/release/*.aab"
           if-no-files-found: error
