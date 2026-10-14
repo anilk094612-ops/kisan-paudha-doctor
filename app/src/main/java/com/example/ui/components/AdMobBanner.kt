@@ -279,34 +279,34 @@ fun AdMobBannerView(
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(vertical = 4.dp, horizontal = 8.dp),
+        .padding(vertical = 1.dp, horizontal = 4.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      // Ad header indicator according to Google AdMob policy
+      // Ad header indicator according to Google AdMob policy (Compact)
       Row(
         modifier = Modifier
           .fillMaxWidth()
-          .padding(horizontal = 4.dp, vertical = 2.dp),
+          .padding(horizontal = 4.dp, vertical = 1.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
           Surface(
-            shape = RoundedCornerShape(4.dp),
+            shape = RoundedCornerShape(3.dp),
             color = if (isDark) Color(0xFF2E3D2E) else Color(0xFFE8F0E4)
           ) {
             Text(
               text = "Ad",
-              fontSize = 10.sp,
+              fontSize = 9.sp,
               fontWeight = FontWeight.Bold,
               color = if (isDark) Color(0xFF81C784) else ForestGreen,
-              modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
+              modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
             )
           }
-          Spacer(modifier = Modifier.width(6.dp))
+          Spacer(modifier = Modifier.width(4.dp))
           Text(
             text = "प्रायोजित विज्ञापन",
-            fontSize = 11.sp,
+            fontSize = 10.sp,
             fontWeight = FontWeight.Medium,
             color = if (isDark) Color(0xFF9E9E9E) else Color(0xFF666666)
           )
@@ -315,28 +315,28 @@ fun AdMobBannerView(
         Row(verticalAlignment = Alignment.CenterVertically) {
           if (activeAdUnitId == AdConfig.TEST_BANNER_AD_UNIT_ID) {
             Text(
-              text = if (hasFallenBack) "Auto Test Ad (इम्प्रेशन सक्रिय)" else "Google Test Ad",
-              fontSize = 10.sp,
+              text = if (hasFallenBack) "Auto Test Ad" else "Test Ad",
+              fontSize = 9.sp,
               color = if (isDark) Color(0xFFFFB74D) else Color(0xFFD84315),
               fontWeight = FontWeight.Bold
             )
           } else {
             Text(
               text = "Live AdMob",
-              fontSize = 10.sp,
+              fontSize = 9.sp,
               color = if (isDark) Color(0xFF81C784) else ForestGreen,
               fontWeight = FontWeight.Bold
             )
           }
 
-          Spacer(modifier = Modifier.width(6.dp))
+          Spacer(modifier = Modifier.width(4.dp))
           // Quick reload button to re-request ad / test impression
           Icon(
             imageVector = Icons.Default.Refresh,
             contentDescription = "Reload Ad",
             tint = if (isDark) Color(0xFFAAAAAA) else Color(0xFF777777),
             modifier = Modifier
-              .size(16.dp)
+              .size(14.dp)
               .clickable {
                 reloadTrigger++
                 hasFallenBack = false
@@ -346,7 +346,7 @@ fun AdMobBannerView(
         }
       }
 
-      Spacer(modifier = Modifier.height(2.dp))
+      Spacer(modifier = Modifier.height(1.dp))
 
       // Ad Content Container
       Box(

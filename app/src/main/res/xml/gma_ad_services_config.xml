@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ad-services-config>
-    <!-- Safe Privacy Sandbox configuration to prevent ServiceUnavailableException on emulators -->
+    <attribution
+        allowAdPartners="false"
+        allowAllToAccess="false" />
 </ad-services-config>
