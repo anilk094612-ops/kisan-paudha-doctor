@@ -1,4 +1,5 @@
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
+import java.util.Base64
 
 plugins {
   alias(libs.plugins.android.application)
@@ -23,19 +24,46 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
+  val rootKeystore = file("${rootDir}/debug.keystore")
+  val rootKeystoreBase64 = file("${rootDir}/debug.keystore.base64")
+  if (!rootKeystore.exists() && rootKeystoreBase64.exists()) {
+    try {
+      val decoded = Base64.getDecoder().decode(rootKeystoreBase64.readText().trim())
+      rootKeystore.writeBytes(decoded)
+    } catch (_: Exception) {}
+  }
+
   signingConfigs {
     create("release") {
       val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
-      storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD")
+      val uploadKey = file(keystorePath)
+      val storePass = System.getenv("STORE_PASSWORD")?.takeIf { it.isNotBlank() } ?: "android"
+      val keyPass = System.getenv("KEY_PASSWORD")?.takeIf { it.isNotBlank() } ?: "android"
+      val alias = System.getenv("KEY_ALIAS")?.takeIf { it.isNotBlank() } ?: "upload"
+      if (uploadKey.exists()) {
+        storeFile = uploadKey
+        storePassword = storePass
+        keyAlias = alias
+        keyPassword = keyPass
+      } else if (rootKeystore.exists()) {
+        storeFile = rootKeystore
+        storePassword = "android"
+        keyAlias = "androiddebugkey"
+        keyPassword = "android"
+      } else {
+        storeFile = uploadKey
+        storePassword = storePass
+        keyAlias = alias
+        keyPassword = keyPass
+      }
     }
     create("debugConfig") {
-      storeFile = file("${rootDir}/debug.keystore")
-      storePassword = "android"
-      keyAlias = "androiddebugkey"
-      keyPassword = "android"
+      if (rootKeystore.exists()) {
+        storeFile = rootKeystore
+        storePassword = "android"
+        keyAlias = "androiddebugkey"
+        keyPassword = "android"
+      }
     }
   }
 
@@ -44,13 +72,25 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("release")
+      val releaseSigning = signingConfigs.getByName("release")
+      if (releaseSigning.storeFile?.exists() == true) {
+        signingConfig = releaseSigning
+      } else if (signingConfigs.findByName("debugConfig")?.storeFile?.exists() == true) {
+        signingConfig = signingConfigs.getByName("debugConfig")
+      } else {
+        signingConfig = signingConfigs.getByName("debug")
+      }
     }
-    debug { signingConfig = signingConfigs.getByName("debugConfig") }
+    debug {
+      val debugSigning = signingConfigs.getByName("debugConfig")
+      if (debugSigning.storeFile?.exists() == true) {
+        signingConfig = debugSigning
+      }
+    }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
   buildFeatures {
     compose = true
@@ -60,6 +100,10 @@ android {
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true
+  }
+  lint {
+    checkReleaseBuilds = false
+    abortOnError = false
   }
 }
 

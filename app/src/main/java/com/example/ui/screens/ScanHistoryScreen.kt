@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.ScanResult
+import com.example.ui.components.AdMobBannerView
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.HarvestAmber
 import com.example.ui.theme.LeafGreen
@@ -62,6 +63,9 @@ fun ScanHistoryScreen(viewModel: PlantDoctorViewModel) {
   val allScans by viewModel.allScans.collectAsStateWithLifecycle()
 
   Scaffold(
+    bottomBar = {
+      AdMobBannerView()
+    },
     topBar = {
       TopAppBar(
         title = {

@@ -27,6 +27,7 @@ import com.example.ui.screens.DiseaseLibraryScreen
 import com.example.ui.screens.ExpertConsultationScreen
 import com.example.ui.screens.FarmerDiaryScreen
 import com.example.ui.screens.HomeScreen
+import com.example.ui.screens.MandiBhavScreen
 import com.example.ui.screens.MyCropScreen
 import com.example.ui.screens.PlantScanScreen
 import com.example.ui.screens.ProblemHubScreen
@@ -36,6 +37,7 @@ import com.example.ui.screens.WeatherScreen
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.PlantDoctorViewModel
 import com.example.ui.viewmodel.Screen
+import com.example.ui.components.AdConfig
 import com.google.android.gms.ads.MobileAds
 
 class MainActivity : ComponentActivity() {
@@ -43,8 +45,13 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
 
-    // Initialize Google Mobile Ads SDK safely in background
+    // Initialize Google Mobile Ads SDK and AdConfig
     try {
+      AdConfig.init(this)
+      val requestConfiguration = com.google.android.gms.ads.RequestConfiguration.Builder()
+        .setTestDeviceIds(listOf(com.google.android.gms.ads.AdRequest.DEVICE_ID_EMULATOR))
+        .build()
+      MobileAds.setRequestConfiguration(requestConfiguration)
       MobileAds.initialize(this) { status ->
         android.util.Log.d("MainActivity", "AdMob initialized: $status")
       }
@@ -95,6 +102,7 @@ fun PlantDoctorApp(viewModel: PlantDoctorViewModel = viewModel()) {
       Screen.ExpertHelp -> ExpertConsultationScreen(viewModel = viewModel)
       Screen.AdminPanel -> AdminPanelScreen(viewModel = viewModel)
       Screen.ScanHistory -> ScanHistoryScreen(viewModel = viewModel)
+      Screen.MandiBhav -> MandiBhavScreen(viewModel = viewModel)
     }
 
     if (showVoiceDialog) {

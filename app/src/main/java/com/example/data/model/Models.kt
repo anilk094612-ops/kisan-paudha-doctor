@@ -12,6 +12,10 @@ data class Crop(
 )
 
 val INITIAL_CROPS = listOf(
+  Crop("wheat", "गेहूं", "🌾", "Triticum aestivum", listOf("पीला रतुआ (Yellow Rust)", "करनाल बंट", "माहू (एफिड्स)", "दीमक", "अनावृत कंडुआ")),
+  Crop("paddy", "धान", "🌾", "Oryza sativa", listOf("शीथ ब्लाइट (झुलसा)", "तना छेदक (Stem Borer)", "भूरा फुदका (BPH)", "खैरा रोग (जिंक की कमी)", "ब्लास्ट रोग")),
+  Crop("sugarcane", "गन्ना", "🎋", "Saccharum officinarum", listOf("लाल सड़न (Red Rot)", "कंसुआ / तना छेदक", "सफेद मक्खी / पायरीला", "चोटी छेदक (Top Borer)", "उकठा (Wilt)", "पोक्का बोइंग (Pokkah Boeng)")),
+  Crop("mustard", "सरसों", "🌼", "Brassica juncea", listOf("सफेद रोली / रतुआ (White Rust)", "माहू / चेपा (Mustard Aphids)", "अल्टरनेरिया पत्ती धब्बा (Alternaria Blight)", "डाउनी मिल्ड्यू / तुलासिता", "तना गलन (Sclerotinia Stem Rot)")),
   Crop("tomato", "टमाटर", "🍅", "Solanum lycopersicum", listOf("फल छेदक", "पत्ती मरोड़ (लीफ़ कर्ल)", "झुलसा (ब्लाइट)", "फूल झड़ना")),
   Crop("chilli", "मिर्च", "🌶️", "Capsicum annuum", listOf("फूल झड़ना", "पत्ती मुड़ना (मरोड़िया)", "थ्रिप्स व माइट्स", "उकठा रोग")),
   Crop("brinjal", "बैंगन", "🍆", "Solanum melongena", listOf("तना व फल छेदक", "पत्तियां पीली होना", "बैक्टीरियल विल्ट", "फूट ड्रॉप")),

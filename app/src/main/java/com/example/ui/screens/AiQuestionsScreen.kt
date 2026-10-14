@@ -45,6 +45,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,6 +55,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.ui.components.AdMobBannerView
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.HarvestAmber
 import com.example.ui.theme.LeafGreen
@@ -72,14 +74,20 @@ fun AiQuestionsScreen(viewModel: PlantDoctorViewModel) {
   val leavesYellowing by viewModel.leavesYellowing.collectAsStateWithLifecycle()
   val freeFormText by viewModel.freeFormProblemText.collectAsStateWithLifecycle()
   val isAnalyzing by viewModel.isAnalyzing.collectAsStateWithLifecycle()
+  val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+  val strings = remember(currentLanguage) { com.example.data.model.LanguageDictionary.getStrings(currentLanguage) }
 
   Scaffold(
+    bottomBar = {
+      AdMobBannerView()
+    },
     topBar = {
       TopAppBar(
         title = {
           Text(
-            text = "कुछ आसान सवाल",
+            text = strings.answerSymptomsPrompt,
             fontWeight = FontWeight.Bold,
+            fontSize = 17.sp,
             color = Color.White
           )
         },

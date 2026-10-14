@@ -38,7 +38,8 @@ class GeminiPlantService {
     hasInsects: String,
     flowerDropping: String,
     leavesYellowing: String,
-    freeFormProblem: String = ""
+    freeFormProblem: String = "",
+    targetLanguage: com.example.data.model.AppLanguage = com.example.data.model.AppLanguage.HINDI
   ): ScanResult = withContext(Dispatchers.IO) {
     val apiKey = try {
       BuildConfig.GEMINI_API_KEY
@@ -64,7 +65,8 @@ class GeminiPlantService {
     try {
       val prompt = """
         आप एक भारतीय कृषि विशेषज्ञ एवं पौधा डॉक्टर AI हैं।
-        छोटे और ग्रामीण किसानों के लिए अत्यंत सरल हिंदी में पौधे की संभावित समस्या का विश्लेषण करें।
+        किसान की चुनी गई भाषा: ${targetLanguage.nativeName} (${targetLanguage.englishName})।
+        छोटे और ग्रामीण किसानों के लिए अत्यंत सरल, व्यावहारिक और स्पष्ट भाषा (${targetLanguage.nativeName}) में पौधे की संभावित समस्या का विश्लेषण करें।
         
         फसल: $cropName
         समस्या का स्थान: $symptomLocation
@@ -76,14 +78,14 @@ class GeminiPlantService {
         
         नियम:
         1. कभी भी 100% सही होने का दावा न करें। हमेशा 'संभावित' शब्द का उपयोग करें।
-        2. भाषा अत्यंत सरल ग्रामीण हिंदी हो। कठिन अंग्रेजी या लैटिन वैज्ञानिक शब्दों से बचें।
+        2. भाषा किसान की मातृभाषा '${targetLanguage.nativeName}' हो। ग्रामीण और सरल भाषा शैली अपनाएं। कठिन लैटिन वैज्ञानिक शब्दों से बचें।
         3. खतरनाक कीटनाशकों का मनमाना डोज न दें। हमेशा उत्पाद लेबल व स्थानीय कृषि विशेषज्ञ की सलाह लेने को कहें।
         4. जैविक और सरल देसी प्राथमिक उपचारों को प्राथमिकता दें।
         
-        उत्तर केवल मान्य JSON प्रारूप में दें:
+        उत्तर केवल मान्य JSON प्रारूप में दें, जिसमें सभी मान (values) '${targetLanguage.nativeName}' में लिखे हों:
         {
-          "possible_problem": "संभावित समस्या का सरल नाम",
-          "confidence": "उच्च संभावना या मध्यम संभावना या कम संभावना",
+          "possible_problem": "संभावित समस्या का सरल नाम (${targetLanguage.nativeName})",
+          "confidence": "संभावना स्तर",
           "possible_causes": ["कारण 1", "कारण 2", "कारण 3"],
           "visible_symptoms": ["लक्षण 1", "लक्षण 2"],
           "recommended_actions": ["कार्रवाई 1", "कार्रवाई 2", "कार्रवाई 3"],

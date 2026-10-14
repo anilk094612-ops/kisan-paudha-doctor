@@ -245,6 +245,10 @@ fun MyCropScreen(viewModel: PlantDoctorViewModel) {
             onClick = {
               val days = daysInput.toIntOrNull() ?: 30
               val emoji = when {
+                cropNameInput.contains("गेहूं") -> "🌾"
+                cropNameInput.contains("धान") || cropNameInput.contains("चावल") -> "🌾"
+                cropNameInput.contains("गन्ना") -> "🎋"
+                cropNameInput.contains("सरसों") -> "🌼"
                 cropNameInput.contains("टमाटर") -> "🍅"
                 cropNameInput.contains("मिर्च") -> "🌶️"
                 cropNameInput.contains("बैंगन") -> "🍆"

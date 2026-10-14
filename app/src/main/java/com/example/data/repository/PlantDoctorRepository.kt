@@ -42,7 +42,8 @@ class PlantDoctorRepository(
     hasInsects: String,
     flowerDropping: String,
     leavesYellowing: String,
-    freeFormProblem: String = ""
+    freeFormProblem: String = "",
+    targetLanguage: com.example.data.model.AppLanguage = com.example.data.model.AppLanguage.HINDI
   ): ScanResult {
     return geminiService.diagnosePlant(
       cropName = cropName,
@@ -52,7 +53,8 @@ class PlantDoctorRepository(
       hasInsects = hasInsects,
       flowerDropping = flowerDropping,
       leavesYellowing = leavesYellowing,
-      freeFormProblem = freeFormProblem
+      freeFormProblem = freeFormProblem,
+      targetLanguage = targetLanguage
     )
   }
 

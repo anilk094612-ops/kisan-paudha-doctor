@@ -50,11 +50,16 @@ import com.example.ui.theme.LeafGreen
 import com.example.ui.theme.PaleGreenBg
 import com.example.ui.viewmodel.PlantDoctorViewModel
 
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.data.model.LanguageDictionary
+
 @Composable
 fun VoiceAssistantDialog(
   viewModel: PlantDoctorViewModel,
   onDismiss: () -> Unit
 ) {
+  val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+  val strings = remember(currentLanguage) { LanguageDictionary.getStrings(currentLanguage) }
   var spokenText by remember { mutableStateOf("") }
 
   val speechLauncher = rememberLauncherForActivityResult(
@@ -98,12 +103,20 @@ fun VoiceAssistantDialog(
             )
           }
           Spacer(modifier = Modifier.width(10.dp))
-          Text(
-            text = "बोलकर समस्या बताएं",
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            color = ForestGreen
-          )
+          Column {
+            Text(
+              text = strings.voiceAssistantTitle,
+              fontWeight = FontWeight.Bold,
+              fontSize = 17.sp,
+              color = ForestGreen
+            )
+            Text(
+              text = "🌐 ${currentLanguage.nativeName} (${currentLanguage.englishName})",
+              fontSize = 11.sp,
+              fontWeight = FontWeight.Medium,
+              color = Color(0xFF4A5847)
+            )
+          }
         }
         IconButton(onClick = onDismiss) {
           Icon(imageVector = Icons.Default.Close, contentDescription = "बंद करें")
@@ -113,7 +126,7 @@ fun VoiceAssistantDialog(
     text = {
       Column {
         Text(
-          text = "माइक बटन दबाएं और अपनी भाषा (हिंदी) में पौधे की परेशानी बोलें:",
+          text = "माइक बटन दबाएं और अपनी भाषा (${currentLanguage.nativeName}) में पौधे की परेशानी बोलें:",
           fontSize = 14.sp,
           fontWeight = FontWeight.SemiBold,
           color = Color(0xFF111410)
@@ -125,8 +138,9 @@ fun VoiceAssistantDialog(
           onClick = {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
               putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-              putExtra(RecognizerIntent.EXTRA_LANGUAGE, "hi-IN")
-              putExtra(RecognizerIntent.EXTRA_PROMPT, "पौधे की समस्या बोलें...")
+              putExtra(RecognizerIntent.EXTRA_LANGUAGE, currentLanguage.speechTag)
+              putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", arrayOf("hi-IN", "en-IN", currentLanguage.speechTag))
+              putExtra(RecognizerIntent.EXTRA_PROMPT, "${currentLanguage.nativeName} में समस्या बोलें...")
             }
             try {
               speechLauncher.launch(intent)
@@ -143,7 +157,7 @@ fun VoiceAssistantDialog(
         ) {
           Icon(imageVector = Icons.Default.Mic, contentDescription = null, modifier = Modifier.size(24.dp), tint = Color.White)
           Spacer(modifier = Modifier.width(8.dp))
-          Text("माइक चालू करें और बोलें 🎙️", fontSize = 17.sp, fontWeight = FontWeight.Bold, color = Color.White)
+          Text("${strings.tapMicToSpeak} 🎙️", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
 
         Spacer(modifier = Modifier.height(14.dp))

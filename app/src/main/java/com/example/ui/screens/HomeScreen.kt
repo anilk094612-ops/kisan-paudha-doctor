@@ -1,5 +1,7 @@
 package com.example.ui.screens
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +25,7 @@ import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,17 +37,24 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.example.ui.components.AdMobBannerView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.data.model.AppLanguage
+import com.example.data.model.LanguageDictionary
+import com.example.ui.components.AdMobBannerView
+import com.example.ui.components.LanguageSelectionDialog
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.GeometricBg
 import com.example.ui.theme.GeometricBorder
@@ -57,6 +67,25 @@ import com.example.ui.theme.SageContainer
 import com.example.ui.viewmodel.PlantDoctorViewModel
 import com.example.ui.viewmodel.Screen
 
+// Play Store App Link (भविष्य में Play Store URL बदलने के लिए केवल इसे बदलें)
+const val PLAY_STORE_APP_LINK = "[PLAY_STORE_LINK]"
+
+fun shareApp(context: Context) {
+  val shareMessage = """
+🌱 किसान पौधा डॉक्टर AI
+पौधे की फोटो खींचकर संभावित बीमारी, कीट और खेती की समस्या समझने में मदद लें।
+ऐप डाउनलोड करके अपनी फसल की जांच करें:
+$PLAY_STORE_APP_LINK
+  """.trimIndent()
+
+  val intent = Intent(Intent.ACTION_SEND).apply {
+    type = "text/plain"
+    putExtra(Intent.EXTRA_SUBJECT, "किसान पौधा डॉक्टर AI")
+    putExtra(Intent.EXTRA_TEXT, shareMessage)
+  }
+  context.startActivity(Intent.createChooser(intent, "दोस्तों को ऐप भेजें"))
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -64,6 +93,18 @@ fun HomeScreen(
   onOpenVoiceDialog: () -> Unit
 ) {
   val weather by viewModel.weatherInfo.collectAsStateWithLifecycle()
+  val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+  val strings = remember(currentLanguage) { LanguageDictionary.getStrings(currentLanguage) }
+  var showLanguageDialog by remember { mutableStateOf(false) }
+  val context = LocalContext.current
+
+  if (showLanguageDialog) {
+    LanguageSelectionDialog(
+      currentLanguage = currentLanguage,
+      onLanguageSelected = { lang -> viewModel.setLanguage(lang) },
+      onDismiss = { showLanguageDialog = false }
+    )
+  }
 
   Scaffold(
     topBar = {
@@ -76,7 +117,7 @@ fun HomeScreen(
         Row(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
@@ -88,46 +129,85 @@ fun HomeScreen(
               )
               Spacer(modifier = Modifier.width(8.dp))
               Text(
-                text = "किसान पौधा डॉक्टर AI",
+                text = strings.appName,
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 19.sp,
                 color = ForestGreen
               )
             }
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-              text = "आपकी फसल, आपकी मेहनत, बेहतर कमाई",
-              fontSize = 14.sp,
+              text = strings.tagline,
+              fontSize = 13.sp,
               fontWeight = FontWeight.SemiBold,
               color = Color(0xFF262F23)
             )
           }
 
           Row(verticalAlignment = Alignment.CenterVertically) {
+            // Language selector button
+            Surface(
+              shape = RoundedCornerShape(20.dp),
+              color = SageContainer,
+              border = BorderStroke(1.dp, ForestGreen.copy(alpha = 0.5f)),
+              modifier = Modifier
+                .clickable { showLanguageDialog = true }
+                .testTag("top_language_button")
+            ) {
+              Row(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Text(text = "🌐", fontSize = 15.sp)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                  text = currentLanguage.nativeName,
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 12.sp,
+                  color = ForestGreen
+                )
+              }
+            }
+            Spacer(modifier = Modifier.width(4.dp))
+            IconButton(
+              onClick = { shareApp(context) },
+              modifier = Modifier
+                .size(38.dp)
+                .testTag("top_share_button")
+            ) {
+              Icon(
+                imageVector = Icons.Default.Share,
+                contentDescription = "दोस्तों को भेजें",
+                tint = ForestGreen,
+                modifier = Modifier.size(20.dp)
+              )
+            }
+            Spacer(modifier = Modifier.width(2.dp))
             IconButton(
               onClick = { viewModel.navigateTo(Screen.ScanHistory) },
               modifier = Modifier
-                .size(42.dp)
+                .size(38.dp)
                 .testTag("history_button")
             ) {
               Icon(
                 imageVector = Icons.Default.History,
-                contentDescription = "स्कैन इतिहास",
-                tint = ForestGreen
+                contentDescription = strings.historyTitle,
+                tint = ForestGreen,
+                modifier = Modifier.size(20.dp)
               )
             }
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(2.dp))
             // Geometric circular avatar button leading to Admin/Controls
             Box(
               modifier = Modifier
-                .size(44.dp)
+                .size(38.dp)
                 .clip(CircleShape)
                 .background(SageContainer)
                 .clickable { viewModel.navigateTo(Screen.AdminPanel) }
                 .testTag("admin_button"),
               contentAlignment = Alignment.Center
             ) {
-              Text(text = "👤", fontSize = 20.sp)
+              Text(text = "👤", fontSize = 18.sp)
             }
           }
         }
@@ -157,25 +237,31 @@ fun HomeScreen(
           ) {
             NavTabItem(
               icon = "🏠",
-              label = "होम",
+              label = strings.homeTab,
               isActive = true,
               onClick = { /* Already on Home */ }
             )
             NavTabItem(
               icon = "🚜",
-              label = "मेरी फसल",
+              label = strings.myCropsTitle,
               isActive = false,
               onClick = { viewModel.navigateTo(Screen.MyCropScreen) }
             )
             NavTabItem(
+              icon = "🌾",
+              label = strings.mandiBhavTitle,
+              isActive = false,
+              onClick = { viewModel.navigateTo(Screen.MandiBhav) }
+            )
+            NavTabItem(
               icon = "🌦️",
-              label = "मौसम",
+              label = strings.weatherTitle,
               isActive = false,
               onClick = { viewModel.navigateTo(Screen.WeatherScreen) }
             )
             NavTabItem(
               icon = "👨🌾",
-              label = "विशेषज्ञ",
+              label = strings.expertHelpTitle,
               isActive = false,
               onClick = { viewModel.navigateTo(Screen.ExpertHelp) }
             )
@@ -192,6 +278,77 @@ fun HomeScreen(
       contentPadding = PaddingValues(16.dp),
       verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+      // 0. All India Multi-Language Banner (15+ Languages)
+      item {
+        Card(
+          onClick = { showLanguageDialog = true },
+          shape = RoundedCornerShape(20.dp),
+          colors = CardDefaults.cardColors(containerColor = GeometricSurface),
+          border = BorderStroke(1.5.dp, SageContainer),
+          elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .testTag("language_switch_banner")
+        ) {
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 14.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+          ) {
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier.weight(1f)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(38.dp)
+                  .clip(CircleShape)
+                  .background(SageContainer),
+                contentAlignment = Alignment.Center
+              ) {
+                Text(text = "🇮🇳", fontSize = 20.sp)
+              }
+              Spacer(modifier = Modifier.width(10.dp))
+              Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                  Text(
+                    text = "भाषा: ${currentLanguage.nativeName}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = ForestGreen
+                  )
+                  Spacer(modifier = Modifier.width(6.dp))
+                  Text(
+                    text = "(${currentLanguage.englishName})",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                  )
+                }
+                Text(
+                  text = strings.allIndiaLanguagesNote,
+                  fontSize = 11.sp,
+                  color = Color(0xFF4A5647)
+                )
+              }
+            }
+            Surface(
+              shape = RoundedCornerShape(10.dp),
+              color = ForestGreen
+            ) {
+              Text(
+                text = strings.changeLanguage,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+              )
+            }
+          }
+        }
+      }
+
       // 1. Geometric Hero: 📷 पौधे की फोटो स्कैन करें (rounded-[2rem] 32dp, border-4 border-[#D7E8CD])
       item {
         Card(
@@ -221,13 +378,13 @@ fun HomeScreen(
               Text(text = "📷", fontSize = 34.sp)
             }
             Text(
-              text = "पौधे की फोटो स्कैन करें",
+              text = strings.scanCropPhoto,
               fontSize = 22.sp,
               fontWeight = FontWeight.Bold,
               color = Color.White
             )
             Text(
-              text = "बीमारी और कीड़ों की तुरंत जांच करें",
+              text = strings.scanCropPhotoSubtitle,
               fontSize = 14.sp,
               color = Color.White.copy(alpha = 0.90f)
             )
@@ -244,7 +401,7 @@ fun HomeScreen(
           ) {
             GeometricQuickButton(
               emoji = "🌼",
-              title = "फूल गिर रहे हैं?",
+              title = strings.flowerDropTitle,
               modifier = Modifier
                 .weight(1f)
                 .testTag("shortcut_flower_drop"),
@@ -252,7 +409,7 @@ fun HomeScreen(
             )
             GeometricQuickButton(
               emoji = "🍃",
-              title = "पत्ते पीले हैं?",
+              title = strings.yellowLeavesTitle,
               modifier = Modifier
                 .weight(1f)
                 .testTag("shortcut_yellow_leaves"),
@@ -265,7 +422,7 @@ fun HomeScreen(
           ) {
             GeometricQuickButton(
               emoji = "🐛",
-              title = "कीड़े लग गए हैं?",
+              title = strings.insectPestTitle,
               modifier = Modifier
                 .weight(1f)
                 .testTag("shortcut_insects"),
@@ -273,7 +430,7 @@ fun HomeScreen(
             )
             GeometricQuickButton(
               emoji = "🍅",
-              title = "फल नहीं लग रहा?",
+              title = strings.fruitNotSettingTitle,
               modifier = Modifier
                 .weight(1f)
                 .testTag("shortcut_fruit_issue"),
@@ -352,7 +509,83 @@ fun HomeScreen(
         }
       }
 
-      // 4. Kisan Seva Kendra - Balanced Feature Navigation Cards
+      // 4. 🤝 दोस्तों को ऐप भेजें (Refer / Share App)
+      item {
+        Card(
+          onClick = { shareApp(context) },
+          shape = RoundedCornerShape(24.dp),
+          colors = CardDefaults.cardColors(containerColor = GeometricSurface),
+          border = BorderStroke(2.dp, ForestGreen),
+          elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .testTag("btn_share_app")
+        ) {
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+          ) {
+            Row(
+              verticalAlignment = Alignment.CenterVertically,
+              modifier = Modifier.weight(1f)
+            ) {
+              Box(
+                modifier = Modifier
+                  .size(52.dp)
+                  .clip(CircleShape)
+                  .background(SageContainer),
+                contentAlignment = Alignment.Center
+              ) {
+                Text(text = "🤝", fontSize = 28.sp)
+              }
+              Spacer(modifier = Modifier.width(14.dp))
+              Column {
+                Text(
+                  text = "🤝 ${strings.shareAppTitle}",
+                  fontSize = 18.sp,
+                  fontWeight = FontWeight.Bold,
+                  color = ForestGreen
+                )
+                Spacer(modifier = Modifier.height(3.dp))
+                Text(
+                  text = "साथी किसानों की फसल सुरक्षा में मदद करें",
+                  fontSize = 13.sp,
+                  fontWeight = FontWeight.SemiBold,
+                  color = Color(0xFF262F23)
+                )
+              }
+            }
+            Surface(
+              shape = RoundedCornerShape(12.dp),
+              color = ForestGreen
+            ) {
+              Row(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
+                verticalAlignment = Alignment.CenterVertically
+              ) {
+                Icon(
+                  imageVector = Icons.Default.Share,
+                  contentDescription = "शेयर करें",
+                  tint = Color.White,
+                  modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                  text = "शेयर",
+                  fontSize = 14.sp,
+                  fontWeight = FontWeight.Bold,
+                  color = Color.White
+                )
+              }
+            }
+          }
+        }
+      }
+
+      // 5. Kisan Seva Kendra - Balanced Feature Navigation Cards
       item {
         Text(
           text = "किसान सेवा केंद्र:",
@@ -368,8 +601,8 @@ fun HomeScreen(
           ) {
             GeometricFeatureCard(
               emoji = "🌱",
-              title = "फसल समस्या हब",
-              subtitle = "रोग व पोषण निवारण",
+              title = strings.problemHubTitle,
+              subtitle = strings.problemHubSubtitle,
               modifier = Modifier
                 .weight(1f)
                 .testTag("btn_problem_hub"),
@@ -377,7 +610,7 @@ fun HomeScreen(
             )
             GeometricFeatureCard(
               emoji = "📚",
-              title = "रोग पहचान कोष",
+              title = strings.cropLibraryTitle,
               subtitle = "लक्षण व जैविक उपचार",
               modifier = Modifier
                 .weight(1f)
@@ -392,7 +625,7 @@ fun HomeScreen(
           ) {
             GeometricFeatureCard(
               emoji = "📖",
-              title = "किसान डायरी",
+              title = strings.farmerDiaryTitle,
               subtitle = "सिंचाई व खाद रिकॉर्ड",
               modifier = Modifier
                 .weight(1f)
@@ -401,12 +634,36 @@ fun HomeScreen(
             )
             GeometricFeatureCard(
               emoji = "👨🌾",
-              title = "वैज्ञानिक सलाह",
+              title = strings.expertHelpTitle,
               subtitle = "विशेषज्ञ से पूछें",
               modifier = Modifier
                 .weight(1f)
                 .testTag("btn_expert_help"),
               onClick = { viewModel.navigateTo(Screen.ExpertHelp) }
+            )
+          }
+
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+          ) {
+            GeometricFeatureCard(
+              emoji = "🌾",
+              title = strings.mandiBhavTitle,
+              subtitle = strings.mandiBhavSubtitle,
+              modifier = Modifier
+                .weight(1f)
+                .testTag("btn_mandi_bhav"),
+              onClick = { viewModel.navigateTo(Screen.MandiBhav) }
+            )
+            GeometricFeatureCard(
+              emoji = "📜",
+              title = strings.historyTitle,
+              subtitle = "पुरानी जांच रिपोर्ट",
+              modifier = Modifier
+                .weight(1f)
+                .testTag("btn_scan_history_hub"),
+              onClick = { viewModel.navigateTo(Screen.ScanHistory) }
             )
           }
         }

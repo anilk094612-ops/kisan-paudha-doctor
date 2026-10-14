@@ -487,6 +487,10 @@ fun PlantScanScreen(viewModel: PlantDoctorViewModel) {
                     text = when (selectedSampleName) {
                       "मिर्च फूल झड़ना" -> "🌶️"
                       "टमाटर झुलसा" -> "🍅"
+                      "गेहूं पीला रतुआ" -> "🌾"
+                      "धान तना छेदक" -> "🌾"
+                      "गन्ना लाल सड़न" -> "🎋"
+                      "सरसों सफेद रोली" -> "🌼"
                       else -> "🍆"
                     },
                     fontSize = 72.sp
@@ -1185,6 +1189,73 @@ fun PlantScanScreen(viewModel: PlantDoctorViewModel) {
                   selectedSampleName = "बैंगन इल्ली"
                   viewModel.hasInsects.value = "हाँ"
                   viewModel.symptomLocation.value = "फल में"
+                }
+              )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              SamplePhotoCardGeometric(
+                title = "गेहूं पीला रतुआ",
+                emoji = "🌾",
+                modifier = Modifier.weight(1f),
+                isSelected = selectedSampleName == "गेहूं पीला रतुआ",
+                onClick = {
+                  selectedSampleName = "गेहूं पीला रतुआ"
+                  viewModel.leavesYellowing.value = "हाँ"
+                  viewModel.symptomLocation.value = "पत्तियों में"
+                }
+              )
+              SamplePhotoCardGeometric(
+                title = "धान तना छेदक",
+                emoji = "🌾",
+                modifier = Modifier.weight(1f),
+                isSelected = selectedSampleName == "धान तना छेदक",
+                onClick = {
+                  selectedSampleName = "धान तना छेदक"
+                  viewModel.hasInsects.value = "हाँ"
+                  viewModel.symptomLocation.value = "तने में"
+                }
+              )
+              SamplePhotoCardGeometric(
+                title = "गन्ना लाल सड़न",
+                emoji = "🎋",
+                modifier = Modifier.weight(1f),
+                isSelected = selectedSampleName == "गन्ना लाल सड़न",
+                onClick = {
+                  selectedSampleName = "गन्ना लाल सड़न"
+                  viewModel.leavesYellowing.value = "हाँ"
+                  viewModel.symptomLocation.value = "तने में"
+                }
+              )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+              SamplePhotoCardGeometric(
+                title = "सरसों सफेद रोली",
+                emoji = "🌼",
+                modifier = Modifier.weight(1f),
+                isSelected = selectedSampleName == "सरसों सफेद रोली",
+                onClick = {
+                  selectedSampleName = "सरसों सफेद रोली"
+                  viewModel.leavesYellowing.value = "हाँ"
+                  viewModel.symptomLocation.value = "पत्तियों में"
+                }
+              )
+              SamplePhotoCardGeometric(
+                title = "सरसों माहू चेपा",
+                emoji = "🐛",
+                modifier = Modifier.weight(1f),
+                isSelected = selectedSampleName == "सरसों माहू चेपा",
+                onClick = {
+                  selectedSampleName = "सरसों माहू चेपा"
+                  viewModel.hasInsects.value = "हाँ"
+                  viewModel.symptomLocation.value = "फूलों में"
                 }
               )
             }

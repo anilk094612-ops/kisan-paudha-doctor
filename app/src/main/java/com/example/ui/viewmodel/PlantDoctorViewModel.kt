@@ -7,6 +7,9 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.local.PlantDoctorDatabase
+import com.example.data.model.AppLanguage
+import com.example.data.model.AppStrings
+import com.example.data.model.LanguageDictionary
 import com.example.data.model.Crop
 import com.example.data.model.ExpertInquiry
 import com.example.data.model.FarmerDiaryEntry
@@ -40,11 +43,30 @@ sealed class Screen {
   object ExpertHelp : Screen()
   object AdminPanel : Screen()
   object ScanHistory : Screen()
+  object MandiBhav : Screen()
 }
 
 class PlantDoctorViewModel(application: Application) : AndroidViewModel(application), TextToSpeech.OnInitListener {
 
   private val repository: PlantDoctorRepository
+
+  private val _currentLanguage = MutableStateFlow<AppLanguage>(AppLanguage.loadFromPrefs(application))
+  val currentLanguage: StateFlow<AppLanguage> = _currentLanguage.asStateFlow()
+
+  fun setLanguage(language: AppLanguage) {
+    _currentLanguage.value = language
+    AppLanguage.saveToPrefs(getApplication(), language)
+    try {
+      val res = tts?.setLanguage(language.locale)
+      ttsInitialized = res != TextToSpeech.LANG_MISSING_DATA && res != TextToSpeech.LANG_NOT_SUPPORTED
+    } catch (e: Exception) {
+      Log.e("PlantDoctorVM", "Error updating TTS locale", e)
+    }
+  }
+
+  fun getAppStrings(): AppStrings {
+    return LanguageDictionary.getStrings(_currentLanguage.value)
+  }
 
   private val _currentScreen = MutableStateFlow<Screen>(Screen.Home)
   val currentScreen: StateFlow<Screen> = _currentScreen.asStateFlow()
@@ -193,7 +215,8 @@ class PlantDoctorViewModel(application: Application) : AndroidViewModel(applicat
           hasInsects = hasInsects.value,
           flowerDropping = flowerDropping.value,
           leavesYellowing = leavesYellowing.value,
-          freeFormProblem = freeFormProblemText.value
+          freeFormProblem = freeFormProblemText.value,
+          targetLanguage = _currentLanguage.value
         )
         // Persist scan result automatically in history
         val insertedId = repository.saveScan(result)
@@ -309,7 +332,7 @@ class PlantDoctorViewModel(application: Application) : AndroidViewModel(applicat
 
   override fun onInit(status: Int) {
     if (status == TextToSpeech.SUCCESS) {
-      val result = tts?.setLanguage(Locale("hi", "IN"))
+      val result = tts?.setLanguage(_currentLanguage.value.locale)
       ttsInitialized = result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED
     }
   }
@@ -325,13 +348,18 @@ class PlantDoctorViewModel(application: Application) : AndroidViewModel(applicat
       return
     }
 
+    val strings = LanguageDictionary.getStrings(_currentLanguage.value)
     val speechScript = buildString {
-      append("फसल ${diag.cropName}। ")
-      append("संभावित समस्या: ${diag.problemHindi}। ")
-      append("संभावित कारण: ")
-      diag.possibleCauses.forEach { append("$it। ") }
-      append("अभी क्या करें: ")
-      diag.recommendedActions.forEach { append("$it। ") }
+      append("${strings.scanTab} ${diag.cropName}। ")
+      append("${diag.problemHindi}। ")
+      if (diag.possibleCauses.isNotEmpty()) {
+        append("${strings.symptomsHeader}: ")
+        diag.possibleCauses.forEach { append("$it। ") }
+      }
+      if (diag.recommendedActions.isNotEmpty()) {
+        append("${strings.actionsHeader}: ")
+        diag.recommendedActions.forEach { append("$it। ") }
+      }
     }
 
     _isSpeaking.value = true

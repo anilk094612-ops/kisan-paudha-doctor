@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.Crop
 import com.example.data.model.INITIAL_CROPS
+import com.example.ui.components.AdMobBannerView
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.HarvestAmber
 import com.example.ui.theme.LeafGreen
@@ -67,6 +68,8 @@ import com.example.ui.viewmodel.Screen
 @Composable
 fun CropSelectionScreen(viewModel: PlantDoctorViewModel) {
   val selectedCrop by viewModel.selectedCrop.collectAsStateWithLifecycle()
+  val currentLanguage by viewModel.currentLanguage.collectAsStateWithLifecycle()
+  val strings = remember(currentLanguage) { com.example.data.model.LanguageDictionary.getStrings(currentLanguage) }
   var showCustomCropDialog by remember { mutableStateOf(false) }
   var customCropName by remember { mutableStateOf("") }
 
@@ -75,7 +78,7 @@ fun CropSelectionScreen(viewModel: PlantDoctorViewModel) {
       TopAppBar(
         title = {
           Text(
-            text = "अपनी फसल चुनें",
+            text = strings.selectCropPrompt,
             fontWeight = FontWeight.Bold,
             color = Color.White
           )
@@ -99,10 +102,13 @@ fun CropSelectionScreen(viewModel: PlantDoctorViewModel) {
       )
     },
     bottomBar = {
-      SurfaceCardBottomBar(
-        selectedCrop = selectedCrop,
-        onProceed = { viewModel.onCropChosen(selectedCrop) }
-      )
+      Column(modifier = Modifier.fillMaxWidth()) {
+        AdMobBannerView()
+        SurfaceCardBottomBar(
+          selectedCrop = selectedCrop,
+          onProceed = { viewModel.onCropChosen(selectedCrop) }
+        )
+      }
     },
     containerColor = MaterialTheme.colorScheme.background
   ) { paddingValues ->

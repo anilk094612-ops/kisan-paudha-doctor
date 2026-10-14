@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.ui.components.AdMobBannerView
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.HarvestAmber
 import com.example.ui.theme.LeafGreen
@@ -79,6 +80,9 @@ fun WeatherScreen(viewModel: PlantDoctorViewModel) {
   var selectedDistrict by remember { mutableStateOf(DISTRICTS[0]) }
 
   Scaffold(
+    bottomBar = {
+      AdMobBannerView()
+    },
     topBar = {
       TopAppBar(
         title = {

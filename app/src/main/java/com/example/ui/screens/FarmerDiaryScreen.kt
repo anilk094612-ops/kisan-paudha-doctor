@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.data.model.FarmerDiaryEntry
+import com.example.ui.components.AdMobBannerView
 import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.HarvestAmber
 import com.example.ui.theme.LeafGreen
@@ -79,6 +80,9 @@ fun FarmerDiaryScreen(viewModel: PlantDoctorViewModel) {
   )
 
   Scaffold(
+    bottomBar = {
+      AdMobBannerView()
+    },
     topBar = {
       TopAppBar(
         title = {
