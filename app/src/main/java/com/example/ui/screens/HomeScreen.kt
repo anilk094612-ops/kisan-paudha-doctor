@@ -109,7 +109,7 @@ fun HomeScreen(
 
   Scaffold(
     topBar = {
-      // Geometric Balance Header
+      // Geometric Balance Header - Compact & High-Visibility Language Button
       Surface(
         color = GeometricSurface,
         modifier = Modifier.fillMaxWidth(),
@@ -118,155 +118,166 @@ fun HomeScreen(
         Row(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-              Text(
-                text = "🌱",
-                fontSize = 24.sp
-              )
-              Spacer(modifier = Modifier.width(8.dp))
+          // Left side: Title & subtitle (bounded so it never overflows or crushes right buttons)
+          Row(
+            modifier = Modifier
+              .weight(1f, fill = false)
+              .padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = "🌱",
+              fontSize = 22.sp
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Column {
               Text(
                 text = strings.appName,
                 fontWeight = FontWeight.Bold,
-                fontSize = 19.sp,
-                color = ForestGreen
+                fontSize = 17.sp,
+                color = ForestGreen,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+              )
+              Text(
+                text = "AI फसल निदान",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF4A5647),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
               )
             }
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-              text = strings.tagline,
-              fontSize = 13.sp,
-              fontWeight = FontWeight.SemiBold,
-              color = Color(0xFF262F23)
-            )
           }
 
-          Row(verticalAlignment = Alignment.CenterVertically) {
-            // Language selector button
+          // Right side: Prominent Language Button + Share + History + Admin
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+          ) {
+            // 🌐 PROMINENT LANGUAGE SELECTOR BUTTON (Always visible, stands out)
             Surface(
-              shape = RoundedCornerShape(20.dp),
-              color = SageContainer,
-              border = BorderStroke(1.dp, ForestGreen.copy(alpha = 0.5f)),
+              shape = RoundedCornerShape(16.dp),
+              color = ForestGreen,
+              shadowElevation = 2.dp,
               modifier = Modifier
                 .clickable { showLanguageDialog = true }
                 .testTag("top_language_button")
             ) {
               Row(
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
               ) {
-                Text(text = "🌐", fontSize = 15.sp)
+                Text(text = "🌐", fontSize = 13.sp)
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                   text = currentLanguage.nativeName,
                   fontWeight = FontWeight.Bold,
                   fontSize = 12.sp,
-                  color = ForestGreen
+                  color = Color.White
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(
+                  text = "▾",
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 12.sp,
+                  color = Color.White.copy(alpha = 0.9f)
                 )
               }
             }
-            Spacer(modifier = Modifier.width(4.dp))
+
             IconButton(
               onClick = { shareApp(context) },
               modifier = Modifier
-                .size(38.dp)
+                .size(34.dp)
                 .testTag("top_share_button")
             ) {
               Icon(
                 imageVector = Icons.Default.Share,
                 contentDescription = "दोस्तों को भेजें",
                 tint = ForestGreen,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
               )
             }
-            Spacer(modifier = Modifier.width(2.dp))
+
             IconButton(
               onClick = { viewModel.navigateTo(Screen.ScanHistory) },
               modifier = Modifier
-                .size(38.dp)
+                .size(34.dp)
                 .testTag("history_button")
             ) {
               Icon(
                 imageVector = Icons.Default.History,
                 contentDescription = strings.historyTitle,
                 tint = ForestGreen,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(18.dp)
               )
             }
-            Spacer(modifier = Modifier.width(2.dp))
-            // Geometric circular avatar button leading to Admin/Controls
+
+            // Admin / Settings button
             Box(
               modifier = Modifier
-                .size(38.dp)
+                .size(34.dp)
                 .clip(CircleShape)
                 .background(SageContainer)
                 .clickable { viewModel.navigateTo(Screen.AdminPanel) }
                 .testTag("admin_button"),
               contentAlignment = Alignment.Center
             ) {
-              Text(text = "👤", fontSize = 18.sp)
+              Text(text = "⚙️", fontSize = 15.sp)
             }
           }
         }
       }
     },
     bottomBar = {
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .background(GeometricSurface)
+      // Sleek, compact bottom navigation bar (Saves over 80dp vertical height)
+      Surface(
+        color = GeometricSurface,
+        modifier = Modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, GeometricBorder)
       ) {
-        // Google AdMob Banner Ad (Cleanly demarcated, non-intrusive)
-        AdMobBannerView()
-
-        // Geometric Balance Bottom Navigation Bar
-        Surface(
-          color = GeometricSurface,
-          modifier = Modifier.fillMaxWidth(),
-          border = BorderStroke(1.dp, GeometricBorder)
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp, horizontal = 4.dp),
+          horizontalArrangement = Arrangement.SpaceAround,
+          verticalAlignment = Alignment.CenterVertically
         ) {
-          Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(vertical = 8.dp, horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            NavTabItem(
-              icon = "🏠",
-              label = strings.homeTab,
-              isActive = true,
-              onClick = { /* Already on Home */ }
-            )
-            NavTabItem(
-              icon = "🚜",
-              label = strings.myCropsTitle,
-              isActive = false,
-              onClick = { viewModel.navigateTo(Screen.MyCropScreen) }
-            )
-            NavTabItem(
-              icon = "🌾",
-              label = strings.mandiBhavTitle,
-              isActive = false,
-              onClick = { viewModel.navigateTo(Screen.MandiBhav) }
-            )
-            NavTabItem(
-              icon = "🌦️",
-              label = strings.weatherTitle,
-              isActive = false,
-              onClick = { viewModel.navigateTo(Screen.WeatherScreen) }
-            )
-            NavTabItem(
-              icon = "👨🌾",
-              label = strings.expertHelpTitle,
-              isActive = false,
-              onClick = { viewModel.navigateTo(Screen.ExpertHelp) }
-            )
-          }
+          NavTabItem(
+            icon = "🏠",
+            label = strings.homeTab,
+            isActive = true,
+            onClick = { /* Already on Home */ }
+          )
+          NavTabItem(
+            icon = "🚜",
+            label = strings.myCropsTitle,
+            isActive = false,
+            onClick = { viewModel.navigateTo(Screen.MyCropScreen) }
+          )
+          NavTabItem(
+            icon = "🌾",
+            label = strings.mandiBhavTitle,
+            isActive = false,
+            onClick = { viewModel.navigateTo(Screen.MandiBhav) }
+          )
+          NavTabItem(
+            icon = "🌦️",
+            label = strings.weatherTitle,
+            isActive = false,
+            onClick = { viewModel.navigateTo(Screen.WeatherScreen) }
+          )
+          NavTabItem(
+            icon = "👨‍🌾",
+            label = strings.expertHelpTitle,
+            isActive = false,
+            onClick = { viewModel.navigateTo(Screen.ExpertHelp) }
+          )
         }
       }
     },
@@ -276,17 +287,17 @@ fun HomeScreen(
       modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues),
-      contentPadding = PaddingValues(16.dp),
-      verticalArrangement = Arrangement.spacedBy(16.dp)
+      contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+      verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-      // 0. All India Multi-Language Banner (15+ Languages)
+      // 0. All India Multi-Language Banner (Compact & Clearly Visible)
       item {
         Card(
           onClick = { showLanguageDialog = true },
-          shape = RoundedCornerShape(20.dp),
+          shape = RoundedCornerShape(14.dp),
           colors = CardDefaults.cardColors(containerColor = GeometricSurface),
-          border = BorderStroke(1.5.dp, SageContainer),
-          elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+          border = BorderStroke(1.5.dp, ForestGreen.copy(alpha = 0.4f)),
+          elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
           modifier = Modifier
             .fillMaxWidth()
             .testTag("language_switch_banner")
@@ -294,7 +305,7 @@ fun HomeScreen(
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(horizontal = 14.dp, vertical = 10.dp),
+              .padding(horizontal = 12.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
           ) {
@@ -304,60 +315,60 @@ fun HomeScreen(
             ) {
               Box(
                 modifier = Modifier
-                  .size(38.dp)
+                  .size(32.dp)
                   .clip(CircleShape)
                   .background(SageContainer),
                 contentAlignment = Alignment.Center
               ) {
-                Text(text = "🇮🇳", fontSize = 20.sp)
+                Text(text = "🇮🇳", fontSize = 16.sp)
               }
-              Spacer(modifier = Modifier.width(10.dp))
+              Spacer(modifier = Modifier.width(8.dp))
               Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                   Text(
                     text = "भाषा: ${currentLanguage.nativeName}",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontSize = 13.sp,
                     color = ForestGreen
                   )
-                  Spacer(modifier = Modifier.width(6.dp))
+                  Spacer(modifier = Modifier.width(4.dp))
                   Text(
                     text = "(${currentLanguage.englishName})",
-                    fontSize = 12.sp,
+                    fontSize = 11.sp,
                     color = Color.Gray
                   )
                 }
                 Text(
-                  text = strings.allIndiaLanguagesNote,
-                  fontSize = 11.sp,
+                  text = "15+ भारतीय भाषाओं में उपलब्ध",
+                  fontSize = 10.sp,
                   color = Color(0xFF4A5647)
                 )
               }
             }
             Surface(
-              shape = RoundedCornerShape(10.dp),
+              shape = RoundedCornerShape(8.dp),
               color = ForestGreen
             ) {
               Text(
-                text = strings.changeLanguage,
-                fontSize = 12.sp,
+                text = "बदलें ▾",
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
               )
             }
           }
         }
       }
 
-      // 1. Geometric Hero: 📷 पौधे की फोटो स्कैन करें (rounded-[2rem] 32dp, border-4 border-[#D7E8CD])
+      // 1. Geometric Hero: 📷 पौधे की फोटो स्कैन करें (Compact, Height Optimized)
       item {
         Card(
           onClick = { viewModel.startNewScanFlow() },
-          shape = RoundedCornerShape(32.dp),
+          shape = RoundedCornerShape(20.dp),
           colors = CardDefaults.cardColors(containerColor = OliveGreen),
-          border = BorderStroke(4.dp, SageContainer),
-          elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+          border = BorderStroke(3.dp, SageContainer),
+          elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
           modifier = Modifier
             .fillMaxWidth()
             .testTag("scan_plant_primary_button")
@@ -365,40 +376,40 @@ fun HomeScreen(
           Column(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(vertical = 24.dp, horizontal = 16.dp),
+              .padding(vertical = 14.dp, horizontal = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(6.dp)
           ) {
             Box(
               modifier = Modifier
-                .size(68.dp)
+                .size(48.dp)
                 .clip(CircleShape)
                 .background(Color.White.copy(alpha = 0.20f)),
               contentAlignment = Alignment.Center
             ) {
-              Text(text = "📷", fontSize = 34.sp)
+              Text(text = "📷", fontSize = 26.sp)
             }
             Text(
               text = strings.scanCropPhoto,
-              fontSize = 22.sp,
+              fontSize = 19.sp,
               fontWeight = FontWeight.Bold,
               color = Color.White
             )
             Text(
               text = strings.scanCropPhotoSubtitle,
-              fontSize = 14.sp,
+              fontSize = 12.sp,
               color = Color.White.copy(alpha = 0.90f)
             )
           }
         }
       }
 
-      // 2. Geometric 2x2 Grid: अक्सर आने वाली समस्याएं (rounded-3xl 24dp, border border-[#E1E3DA])
+      // 2. Geometric 2x2 Grid: अक्सर आने वाली समस्याएं (Compact)
       item {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             GeometricQuickButton(
               emoji = "🌼",
@@ -419,7 +430,7 @@ fun HomeScreen(
           }
           Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             GeometricQuickButton(
               emoji = "🐛",
@@ -441,11 +452,20 @@ fun HomeScreen(
         }
       }
 
-      // 3. Geometric Weather Banner with Integrated Voice Trigger (rounded-3xl, bg-[#D7E8CD])
+      // 3. AdMob Banner Ad (Cleanly placed in scroll feed, not blocking viewport)
+      item {
+        AdMobBannerView(
+          modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+        )
+      }
+
+      // 4. Geometric Weather Banner with Integrated Voice Trigger (Compact)
       item {
         Card(
           onClick = { viewModel.navigateTo(Screen.WeatherScreen) },
-          shape = RoundedCornerShape(24.dp),
+          shape = RoundedCornerShape(16.dp),
           colors = CardDefaults.cardColors(containerColor = SageContainer),
           modifier = Modifier
             .fillMaxWidth()
@@ -455,44 +475,44 @@ fun HomeScreen(
             Row(
               modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(10.dp),
               verticalAlignment = Alignment.CenterVertically
             ) {
               Box(
                 modifier = Modifier
-                  .size(54.dp)
-                  .clip(RoundedCornerShape(16.dp))
+                  .size(42.dp)
+                  .clip(RoundedCornerShape(12.dp))
                   .background(Color.White),
                 contentAlignment = Alignment.Center
               ) {
-                Text(text = weather.conditionEmoji.ifBlank { "🌦️" }, fontSize = 28.sp)
+                Text(text = weather.conditionEmoji.ifBlank { "🌦️" }, fontSize = 22.sp)
               }
-              Spacer(modifier = Modifier.width(14.dp))
+              Spacer(modifier = Modifier.width(10.dp))
               Column(modifier = Modifier.weight(1f)) {
                 Text(
                   text = "आज का मौसम • ${weather.temperature}",
                   fontWeight = FontWeight.Bold,
                   color = ForestGreen,
-                  fontSize = 17.sp
+                  fontSize = 15.sp
                 )
-                Spacer(modifier = Modifier.height(2.dp))
+                Spacer(modifier = Modifier.height(1.dp))
                 Text(
                   text = weather.farmerAlertHindi.ifBlank { "आज बारिश की संभावना है। सिंचाई करने से पहले मौसम देखें।" },
-                  fontSize = 13.sp,
+                  fontSize = 11.sp,
                   color = OliveGreen,
-                  lineHeight = 18.sp,
+                  lineHeight = 15.sp,
                   maxLines = 2
                 )
               }
-              Spacer(modifier = Modifier.width(44.dp)) // Space for mic button
+              Spacer(modifier = Modifier.width(38.dp)) // Space for mic button
             }
 
             // Mic action button top right
             Box(
               modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(end = 12.dp)
-                .size(42.dp)
+                .padding(end = 10.dp)
+                .size(36.dp)
                 .clip(CircleShape)
                 .background(OliveGreen)
                 .clickable { onOpenVoiceDialog() }
@@ -503,21 +523,21 @@ fun HomeScreen(
                 imageVector = Icons.Default.Mic,
                 contentDescription = "बोलकर समस्या बताएं",
                 tint = Color.White,
-                modifier = Modifier.size(22.dp)
+                modifier = Modifier.size(18.dp)
               )
             }
           }
         }
       }
 
-      // 4. 🤝 दोस्तों को ऐप भेजें (Refer / Share App)
+      // 5. 🤝 दोस्तों को ऐप भेजें (Compact)
       item {
         Card(
           onClick = { shareApp(context) },
-          shape = RoundedCornerShape(24.dp),
+          shape = RoundedCornerShape(16.dp),
           colors = CardDefaults.cardColors(containerColor = GeometricSurface),
-          border = BorderStroke(2.dp, ForestGreen),
-          elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+          border = BorderStroke(1.5.dp, ForestGreen),
+          elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
           modifier = Modifier
             .fillMaxWidth()
             .testTag("btn_share_app")
@@ -525,7 +545,7 @@ fun HomeScreen(
           Row(
             modifier = Modifier
               .fillMaxWidth()
-              .padding(16.dp),
+              .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
           ) {
@@ -535,48 +555,48 @@ fun HomeScreen(
             ) {
               Box(
                 modifier = Modifier
-                  .size(52.dp)
+                  .size(40.dp)
                   .clip(CircleShape)
                   .background(SageContainer),
                 contentAlignment = Alignment.Center
               ) {
-                Text(text = "🤝", fontSize = 28.sp)
+                Text(text = "🤝", fontSize = 22.sp)
               }
-              Spacer(modifier = Modifier.width(14.dp))
+              Spacer(modifier = Modifier.width(10.dp))
               Column {
                 Text(
                   text = "🤝 ${strings.shareAppTitle}",
-                  fontSize = 18.sp,
+                  fontSize = 15.sp,
                   fontWeight = FontWeight.Bold,
                   color = ForestGreen
                 )
-                Spacer(modifier = Modifier.height(3.dp))
+                Spacer(modifier = Modifier.height(1.dp))
                 Text(
                   text = "साथी किसानों की फसल सुरक्षा में मदद करें",
-                  fontSize = 13.sp,
+                  fontSize = 11.sp,
                   fontWeight = FontWeight.SemiBold,
                   color = Color(0xFF262F23)
                 )
               }
             }
             Surface(
-              shape = RoundedCornerShape(12.dp),
+              shape = RoundedCornerShape(10.dp),
               color = ForestGreen
             ) {
               Row(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically
               ) {
                 Icon(
                   imageVector = Icons.Default.Share,
                   contentDescription = "शेयर करें",
                   tint = Color.White,
-                  modifier = Modifier.size(16.dp)
+                  modifier = Modifier.size(14.dp)
                 )
-                Spacer(modifier = Modifier.width(6.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                   text = "शेयर",
-                  fontSize = 14.sp,
+                  fontSize = 12.sp,
                   fontWeight = FontWeight.Bold,
                   color = Color.White
                 )
@@ -586,19 +606,19 @@ fun HomeScreen(
         }
       }
 
-      // 5. Kisan Seva Kendra - Balanced Feature Navigation Cards
+      // 6. Kisan Seva Kendra - Balanced Feature Navigation Cards (Compact)
       item {
         Text(
           text = "किसान सेवा केंद्र:",
-          fontSize = 16.sp,
+          fontSize = 15.sp,
           fontWeight = FontWeight.Bold,
           color = GeometricText
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Spacer(modifier = Modifier.height(6.dp))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             GeometricFeatureCard(
               emoji = "🌱",
@@ -622,7 +642,7 @@ fun HomeScreen(
 
           Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             GeometricFeatureCard(
               emoji = "📖",
@@ -634,7 +654,7 @@ fun HomeScreen(
               onClick = { viewModel.navigateTo(Screen.FarmerDiary) }
             )
             GeometricFeatureCard(
-              emoji = "👨🌾",
+              emoji = "👨‍🌾",
               title = strings.expertHelpTitle,
               subtitle = "विशेषज्ञ से पूछें",
               modifier = Modifier
@@ -646,7 +666,7 @@ fun HomeScreen(
 
           Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             GeometricFeatureCard(
               emoji = "🌾",
@@ -699,28 +719,29 @@ fun GeometricQuickButton(
 ) {
   Card(
     onClick = onClick,
-    shape = RoundedCornerShape(24.dp),
+    shape = RoundedCornerShape(16.dp),
     colors = CardDefaults.cardColors(containerColor = GeometricSurface),
     border = BorderStroke(1.5.dp, Color(0xFFBCC6B8)),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-    modifier = modifier.height(112.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.5.dp),
+    modifier = modifier.height(72.dp)
   ) {
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .padding(14.dp),
+        .padding(horizontal = 8.dp, vertical = 6.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center
     ) {
-      Text(text = emoji, fontSize = 34.sp)
-      Spacer(modifier = Modifier.height(8.dp))
+      Text(text = emoji, fontSize = 24.sp)
+      Spacer(modifier = Modifier.height(3.dp))
       Text(
         text = title,
-        fontSize = 16.sp,
+        fontSize = 13.sp,
         fontWeight = FontWeight.Bold,
         color = Color(0xFF111410),
         textAlign = TextAlign.Center,
-        maxLines = 2
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
       )
     }
   }
@@ -736,43 +757,47 @@ fun GeometricFeatureCard(
 ) {
   Card(
     onClick = onClick,
-    shape = RoundedCornerShape(20.dp),
+    shape = RoundedCornerShape(14.dp),
     colors = CardDefaults.cardColors(containerColor = GeometricSurface),
     border = BorderStroke(1.5.dp, Color(0xFFBCC6B8)),
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-    modifier = modifier.height(90.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.5.dp),
+    modifier = modifier.height(64.dp)
   ) {
     Row(
       modifier = Modifier
         .fillMaxSize()
-        .padding(horizontal = 12.dp, vertical = 10.dp),
+        .padding(horizontal = 10.dp, vertical = 6.dp),
       verticalAlignment = Alignment.CenterVertically
     ) {
       Box(
         modifier = Modifier
-          .size(44.dp)
-          .clip(RoundedCornerShape(12.dp))
+          .size(36.dp)
+          .clip(RoundedCornerShape(10.dp))
           .background(SageContainer),
         contentAlignment = Alignment.Center
       ) {
-        Text(text = emoji, fontSize = 24.sp)
+        Text(text = emoji, fontSize = 20.sp)
       }
-      Spacer(modifier = Modifier.width(10.dp))
-      Column(verticalArrangement = Arrangement.Center) {
+      Spacer(modifier = Modifier.width(8.dp))
+      Column(
+        modifier = Modifier.weight(1f),
+        verticalArrangement = Arrangement.Center
+      ) {
         Text(
           text = title,
-          fontSize = 15.sp,
+          fontSize = 13.sp,
           fontWeight = FontWeight.Bold,
           color = ForestGreen,
-          maxLines = 1
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
         )
-        Spacer(modifier = Modifier.height(2.dp))
         Text(
           text = subtitle,
-          fontSize = 13.sp,
+          fontSize = 11.sp,
           fontWeight = FontWeight.SemiBold,
           color = Color(0xFF262F23),
-          maxLines = 1
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
         )
       }
     }
@@ -788,22 +813,23 @@ fun NavTabItem(
 ) {
   Column(
     modifier = Modifier
-      .clip(RoundedCornerShape(12.dp))
+      .clip(RoundedCornerShape(8.dp))
       .clickable(onClick = onClick)
-      .padding(horizontal = 12.dp, vertical = 6.dp),
+      .padding(horizontal = 4.dp, vertical = 3.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center
   ) {
     Text(
       text = icon,
-      fontSize = 22.sp
+      fontSize = 17.sp
     )
-    Spacer(modifier = Modifier.height(2.dp))
+    Spacer(modifier = Modifier.height(1.dp))
     Text(
       text = label,
-      fontSize = 12.sp,
+      fontSize = 10.sp,
       fontWeight = if (isActive) FontWeight.ExtraBold else FontWeight.Bold,
-      color = if (isActive) ForestGreen else Color(0xFF262F23)
+      color = if (isActive) ForestGreen else Color(0xFF262F23),
+      maxLines = 1
     )
   }
 }

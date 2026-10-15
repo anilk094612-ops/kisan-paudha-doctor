@@ -6,7 +6,14 @@
 
 ## 📲 GitHub से APK कैसे डाउनलोड करें (How to Download APK)
 
-### तरीका 1: GitHub Releases से सीधा APK डाउनलोड करें (सबसे आसान तरीका)
+### तरीका 1: सीधे रिपॉजिटरी से APK डाउनलोड करें (तुरंत डाउनलोड)
+1. अपने GitHub रिपॉजिटरी में **`release_apk`** फ़ोल्डर खोलें।
+2. **`KisanDoctor-debug.apk`** पर क्लिक करें।
+3. **"Download raw file"** या **"Download"** बटन दबाएं। यह तुरंत आपके फ़ोन में डाउनलोड हो जाएगा!
+
+---
+
+### तरीका 2: GitHub Releases से सीधा APK डाउनलोड करें
 1. अपने GitHub रिपॉजिटरी पेज के दाईं तरफ (Right Sidebar) **"Releases"** सेक्शन पर जाएं।
 2. सबसे नए रिलीज (Latest Release) पर क्लिक करें।
 3. **Assets** के नीचे सीधे **`KisanPaudhaDoctor-Debug.apk`** पर क्लिक करके डाउनलोड करें।
